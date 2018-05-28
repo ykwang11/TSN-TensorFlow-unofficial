@@ -8,3 +8,7 @@ Also, the CNN architecture is used Tensorflow's official implementation slim
 [[slim]](https://github.com/tensorflow/tensorflow/blob/master/tensorflow/contrib/slim/python/slim/learning.py)
 ***
 ### Training
+***
+### Testing
+***
+### Feature Extraction
