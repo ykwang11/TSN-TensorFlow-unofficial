@@ -35,33 +35,35 @@ with tf.name_scope('input_data'):
 slim = tf.contrib.slim
 
 # TSN network
-with tf.device('/gpu:0'):
-    with slim.arg_scope(net.inception_v2_arg_scope()) as sc:
-        _, end_points_1 = net.inception_v2(x1, num_classes = 101,
-                                           is_training=True, reuse=None)
-        _, end_points_2 = net.inception_v2(x2, num_classes = 101, 
-                                           is_training=True, reuse=True)
-        _, end_points_3 = net.inception_v2(x3, num_classes = 101,
-                                           is_training=True, reuse=True)
-variables_to_restore = slim.get_variables_to_restore(
-                            include=["InceptionV2"], 
-                            exclude=[v.name for v in tf.trainable_variables() if '/Logits/' in v.name])
+with tf.name_scope('model'):
+    with tf.device('/gpu:0'):
+        with slim.arg_scope(net.inception_v2_arg_scope()) as sc:
+            _, end_points_1 = net.inception_v2(x1, num_classes = 101,
+                                               is_training=True, reuse=None)
+            _, end_points_2 = net.inception_v2(x2, num_classes = 101, 
+                                               is_training=True, reuse=True)
+            _, end_points_3 = net.inception_v2(x3, num_classes = 101,
+                                               is_training=True, reuse=True)
+    variables_to_restore = slim.get_variables_to_restore(
+                                include=["InceptionV2"], 
+                                exclude=[v.name for v in tf.trainable_variables() if '/Logits/' in v.name])
 
-## print([v for v in variables_to_restore if '/Logits/' in v.name])
-init_cnn = slim.assign_from_checkpoint_fn('./checkpoints/slim_models/inception_v2.ckpt',
-           variables_to_restore)
+    ## print([v for v in variables_to_restore if '/Logits/' in v.name])
+    init_cnn = slim.assign_from_checkpoint_fn('./checkpoints/slim_models/inception_v2.ckpt',
+               variables_to_restore)
 
-logits = (end_points_1['Logits'] + end_points_2['Logits'] + end_points_3['Logits'])/3.
-cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y_onehot, logits=logits))
-weight_decay = wd*sum(tf.nn.l2_loss(tf_var) for tf_var in tf.trainable_variables())
-loss = cross_entropy+weight_decay
+    logits = (end_points_1['Logits'] + end_points_2['Logits'] + end_points_3['Logits'])/3.
 
-optimizer = tf.train.MomentumOptimizer(learning_rate, 0.9)
-## print(tf.trainable_variables())
-var_train = [var for var in tf.trainable_variables() if not 'BatchNorm' in var.name]
-grads = optimizer.compute_gradients(loss, var_train)
-
-with tf.name_scope('back_propagation'):
+with tf.name_scope('loss'):
+    cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y_onehot, logits=logits))
+    weight_decay = wd*sum(tf.nn.l2_loss(tf_var) for tf_var in tf.trainable_variables())
+    loss = cross_entropy + weight_decay
+    
+with tf.name_scope('back_propagation'):   
+    optimizer = tf.train.MomentumOptimizer(learning_rate, 0.9)
+    ## print(tf.trainable_variables())
+    var_train = [var for var in tf.trainable_variables() if not 'BatchNorm' in var.name]
+    grads = optimizer.compute_gradients(loss, var_train)
     update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
     with tf.control_dependencies(update_ops):
         capped_grads = [(tf.clip_by_value(grad, -20., 20.), var) for grad, var in grads]
