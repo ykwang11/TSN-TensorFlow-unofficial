@@ -1,3 +1,8 @@
+import tensorflow
+import numpt as np
+import imageio
+import cv2
+
 class configuration():
     def __init__(self, batchsize, data_list, label_list):
         self.n_classes = 101
