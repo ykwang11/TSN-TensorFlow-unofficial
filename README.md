@@ -9,13 +9,16 @@ Also, the CNN architecture is used Tensorflow's official implementation slim.
 
 ***
 ### Training
-step 1. intall all of the neccesary moduals
-Tensorflow
+step 1. intall all of the neccesary moduals  
+Tensorflow  
 OpenCV
-
+TBC
 ***
 ### Testing
+TBC
 ***
 ### Results
+TBC
 ***
 ### Others
+TBC
