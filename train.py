@@ -6,7 +6,6 @@ import tensorflow as tf
 from nets import inception_v2 as net
 
 import numpy as np 
-import os
 import time
 import conf as 
 
