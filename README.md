@@ -8,15 +8,6 @@ Also, the Tensorflow's official implementation of the CNN architecture (with a l
 [[Learning of TF-Slim]](https://github.com/tensorflow/tensorflow/blob/master/tensorflow/contrib/slim/python/slim/learning.py)
 
 ***
-### Training
-step 1. intall all of the neccesary moduals  
-Tensorflow  
-OpenCV
-TBC
-***
-### Testing
-TBC
-***
 ### Results
 TBC
 ***
