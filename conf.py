@@ -1,4 +1,4 @@
-import tensorflow
+import tensorflow as tf
 import numpt as np
 import imageio
 import cv2
