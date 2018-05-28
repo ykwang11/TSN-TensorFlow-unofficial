@@ -13,15 +13,12 @@ import time
 
 label_set = np.genfromtxt("dataset/ucfTrainTestlist/classInd.txt", dtype ='U')
 training_set = np.genfromtxt("dataset/ucfTrainTestlist/trainlist01.txt", dtype ='U')
-testing_set = np.genfromtxt("dataset/ucfTrainTestlist/testlist01.txt", dtype = 'U')
 
 data_list = training_set[:,0] 
 label_list = training_set[:,1]
 
 n_classes = 101
 n_data = len(data_list)
-Size = 224
-Height = Width = Size
 batchsize = 64
 wd = 5e-4
 
