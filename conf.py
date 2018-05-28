@@ -30,13 +30,25 @@ class configuration():
             np.random.shuffle(self.query)
         pick = self.query[:self.batchsize]
         del self.query[:self.batchsize]
-
         for i in range(self.batchsize):
             index = pick[i]
             [x1[i], x2[i], x3[i]] = self.open_frame(index, is_training=True)
             y[i] = int(label_list[index]) - 1
+            
         return x1, x2, x3, y
 
+    def test(self):
+        xs = np.zeros((self.batchsize, 250, 224, 224, 3))
+        y = np.zeros((self.batchsize), dtype=np.int)
+        pick = self.query[:self.batchsize]
+        del self.query[:self.batchsize]
+        for i in range(self.batchsize):
+            index = pick[i]
+            xs[i] = self.open_frame(index, is_training=False)
+            y[i] = int(label_list[index]) -1
+            
+        return xs, y
+    
     def open_frame(self, index, is_training):
         data = data_list[index]
         nframes = np.load("./frame/" + data.split('.')[0]+ "/nframes.npy") + 1
@@ -55,6 +67,7 @@ class configuration():
               frame = imageio.imread(file_dir)
               frame_ = self.data_augmentation(frame, flipping, w_crop, h_crop, p_crop)
           frames.append(frame_)
+
         else:
           w_crop = h_crop = 224
           sample = [(i+1)*(nframes//26) for i in range(25)]
@@ -67,6 +80,7 @@ class configuration():
                 frame_ = self.data_augmentation(frame, f, w_crop, h_crop, c)
                 frame_list.append(frame_)          
           frames = np.stack(frame_list, axis=0)
+
         return frames
 
     def data_augmentation(self, frame, flipping, l1, l2, p):
@@ -90,4 +104,5 @@ class configuration():
             crop = frame[int((Height-l1)/2):int((Height+l1)/2), int((Width-l2)/2):int((Width+l2)/2)]
         frame = cv2.resize(crop, (224, 224), interpolation = cv2.INTER_CUBIC)
         frame = frame/255.
+
         return frame
