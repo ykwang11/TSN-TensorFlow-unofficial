@@ -12,7 +12,6 @@ import time
 os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
 label_set = np.genfromtxt("dataset/ucfTrainTestlist/classInd.txt", dtype ='U')
-training_set = np.genfromtxt("dataset/ucfTrainTestlist/trainlist01.txt", dtype ='U')
 testing_set = np.genfromtxt("dataset/ucfTrainTestlist/testlist01.txt", dtype = 'U')
 
 print("Test")
@@ -25,7 +24,6 @@ for index, data in enumerate(data_list):
     label_list[index] = label
 
 n_classes = 101
-n_data = len(training_set)
 n_test_data = len(testing_set)
 Size = 224
 Height = Width = Size
@@ -41,18 +39,7 @@ class configuration():
         self.query = list(range(len(self.label_list)))
         self.epoch = 0
 
-    def test(self):
-        xs = np.zeros((self.batchsize, 250, 224, 224, 3))
-        y = np.zeros((self.batchsize), dtype=np.int)
 
-        pick = self.query[:self.batchsize]
-        del self.query[:self.batchsize]
-
-        for i in range(self.batchsize):
-            index = pick[i]
-            xs[i] = self.open_frame(index)
-            y[i] = int(label_list[index]) -1
-        return xs, y
 
     def open_frame(self, index):
         data = data_list[index]
