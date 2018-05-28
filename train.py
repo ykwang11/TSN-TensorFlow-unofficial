@@ -177,7 +177,7 @@ with tf.Session() as sess:
                   'training time: %ds' % (time.time() - start_time))
 
         if (i+1) % 500 == 0:
-            save_path = saver.save(sess, "pass/to/model.ckpt")
+            save_path = saver.save(sess, "pass/to/save/model.ckpt")
             print('model saved! ', save_path)
 
         if (i+1) % (30*n_data//128) == 0:
