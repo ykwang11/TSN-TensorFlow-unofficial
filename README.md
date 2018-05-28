@@ -5,7 +5,7 @@ This proeject is a re-implementation of the Temporal Segment Networks based on t
 
 Also, the Tensorflow's official implementation of the CNN architecture (with a lightweight library, TF-Slim) is used.  
 [[Code]](https://github.com/tensorflow/models/tree/master/research/slim)
-[[learning of TF-Slim]](https://github.com/tensorflow/tensorflow/blob/master/tensorflow/contrib/slim/python/slim/learning.py)
+[[Learning of TF-Slim]](https://github.com/tensorflow/tensorflow/blob/master/tensorflow/contrib/slim/python/slim/learning.py)
 
 ***
 ### Training
