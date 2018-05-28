@@ -19,20 +19,20 @@ data_list = training_set[:,0]
 label_list = training_set[:,1]
 
 n_classes = 101
-n_data = len(training_set)
+n_data = len(data_list)
 Size = 224
 Height = Width = Size
 batchsize = 64
 wd = 5e-4
 
 class configuration():
-    def __init__(self, batchsize, training_set, testing_set):
+    def __init__(self, batchsize, data_list, label_list):
         self.n_classes = 101
         self.Height = self.Width = 224
         self.batchsize = batchsize
-        self.training_set = training_set
-        self.testing_set = testing_set
-        self.query = list(range(len(self.training_set)))
+        self.data_list = data_list
+        self.label_list = label_list
+        self.query = list(range(len(self.data_list)))
         np.random.shuffle(self.query)
         self.epoch = 0
 
@@ -48,35 +48,47 @@ class configuration():
             print("")
             print("%d Epoch finished!" % self.epoch)
             print("")
-            self.query = list(range(len(self.training_set)))
+            self.query = list(range(len(self.data_list)))
             np.random.shuffle(self.query)
         pick = self.query[:self.batchsize]
         del self.query[:self.batchsize]
 
         for i in range(self.batchsize):
             index = pick[i]
-            [x1[i], x2[i], x3[i]] = self.open_frame(index)
-            y[i] = int(training_set[index][1]) - 1
+            [x1[i], x2[i], x3[i]] = self.open_frame(index, is_training=True)
+            y[i] = int(label_list[index]) - 1
         return x1, x2, x3, y
 
-    def open_frame(self, index):
-        data = training_set[index][0]
+    def open_frame(self, index, is_training):
+        data = data_list[index]
         nframes = np.load("./frame/" + data.split('.')[0]+ "/nframes.npy") + 1
-        
-        flipping = np.random.choice([True, False])
-        w_crop = np.random.choice([256, 224, 192, 168])
-        h_crop = np.random.choice([256, 224, 192, 168])
-        p_crop = np.random.choice(5)
-
-        sample = [np.random.choice(int(nframes/3)), 
-                  np.random.choice(int(nframes/3)) + int(nframes/3),
-                  np.random.choice(int(nframes/3)) + 2*int(nframes/3)]
-        frames = []
-        for i in range(3):
-            file_dir = "./frame/" + data.split('.')[0] + "/frame_%d.jpg" %sample[i]
+ 
+        if is_training:
+          flipping = np.random.choice([True, False])
+          w_crop = np.random.choice([256, 224, 192, 168])
+          h_crop = np.random.choice([256, 224, 192, 168])
+          p_crop = np.random.choice(5)
+          sample = [np.random.choice(int(nframes/3)), 
+                    np.random.choice(int(nframes/3)) + int(nframes/3),
+                    np.random.choice(int(nframes/3)) + 2*int(nframes/3)]
+          frames = []
+          for i in range(3):
+              file_dir = "./frame/" + data.split('.')[0] + "/frame_%d.jpg" %sample[i]
+              frame = imageio.imread(file_dir)
+              frame_ = self.data_augmentation(frame, flipping, w_crop, h_crop, p_crop)
+          frames.append(frame_)
+        else:
+          w_crop = h_crop = 224
+          sample = [(i+1)*(nframes//26) for i in range(25)]
+          frame_list = []
+          for t in range(25):
+            file_dir = "./frame/" + data.split('.')[0] + "/frame_%d.jpg" %sample[t]
             frame = imageio.imread(file_dir)
-            frame_ = self.data_augmentation(frame, flipping, w_crop, h_crop, p_crop)
-            frames.append(frame_)
+            for c in range(5):
+              for f in range(2):
+                frame_ = self.data_augmentation(frame, f, w_crop, h_crop, c)
+                frame_list.append(frame_)          
+          frames = np.stack(frame_list, axis=0)
         return frames
 
     def data_augmentation(self, frame, flipping, l1, l2, p):
@@ -102,7 +114,7 @@ class configuration():
         frame = frame/255.
         return frame
 
-conf = configuration(batchsize, training_set, testing_set)
+conf = configuration(batchsize, data_list, label_list)
 
 # define variable    
 with tf.name_scope('input_data'):
