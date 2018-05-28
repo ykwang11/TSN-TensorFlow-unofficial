@@ -1,5 +1,5 @@
 # TSN-Tensorflow-unofficial
-This proeject is reimplementation of Temporal Segment Networks based on the original paper and the official code released.  
+This proeject is a reimplementation of the Temporal Segment Networks based on the original paper and the official code released (which is written in caffe and Pytorch).  
 [[paper]](http://wanglimin.github.io/papers/WangXWQLTV_ECCV16.pdf)
 [[code]](https://github.com/yjxiong/temporal-segment-networks)  
 
