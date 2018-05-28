@@ -116,6 +116,7 @@ with tf.name_scope('input_data'):
 
 slim = tf.contrib.slim
 
+# TSN network
 with tf.device('/gpu:0'):
     with slim.arg_scope(net.inception_v2_arg_scope()) as sc:
         _, end_points_1 = net.inception_v2(x1, num_classes = 101,
@@ -128,7 +129,7 @@ variables_to_restore = slim.get_variables_to_restore(
                             include=["InceptionV2"], 
                             exclude=[v.name for v in tf.trainable_variables() if '/Logits/' in v.name])
 
-#print([v for v in variables_to_restore if '/Logits/' in v.name])
+## print([v for v in variables_to_restore if '/Logits/' in v.name])
 init_cnn = slim.assign_from_checkpoint_fn('./checkpoints/slim_models/inception_v2.ckpt',
            variables_to_restore)
 
@@ -138,7 +139,7 @@ weight_decay = wd*sum(tf.nn.l2_loss(tf_var) for tf_var in tf.trainable_variables
 loss = cross_entropy+weight_decay
 
 optimizer = tf.train.MomentumOptimizer(learning_rate, 0.9)
-#print(tf.trainable_variables())
+## print(tf.trainable_variables())
 var_train = [var for var in tf.trainable_variables() if not 'BatchNorm' in var.name]
 grads = optimizer.compute_gradients(loss, var_train)
 
