@@ -7,8 +7,6 @@ from nets import inception_v2 as net
 
 import numpy as np 
 import os
-import imageio
-import cv2
 import time
 
 label_set = np.genfromtxt("dataset/ucfTrainTestlist/classInd.txt", dtype ='U')
