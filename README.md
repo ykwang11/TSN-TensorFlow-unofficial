@@ -7,4 +7,4 @@ Also, the CNN architecture is used Tensorflow's official implementation slim
 [[code]](https://github.com/tensorflow/tensorflow/tree/master/tensorflow/contrib/slim/python/slim/nets)
 [[slim]](https://github.com/tensorflow/tensorflow/blob/master/tensorflow/contrib/slim/python/slim/learning.py)
 ***
-# Training
+## Training
