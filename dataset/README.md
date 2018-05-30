@@ -1,3 +1,3 @@
-# dataset  
+# Dataset  
 [[UCF101]](http://crcv.ucf.edu/data/UCF101.php)  
 [[HMDB51]](http://serre-lab.clps.brown.edu/resource/hmdb-a-large-human-motion-database/#Downloads)
